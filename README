@@ -1,0 +1,76 @@
+README for HW2 CSE101:
+
+Matthew Lo October 2022
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Code Files: Makefile, nqueens.cpp, nqueens_functions.cpp, nqueens.h
+Test Files: simple-input.txt, simple-output.txt, more-input.txt, more-output.txt, 
+						test-5-input.txt, test-5-output.txt, 50-11-input.txt, 50-11-output.txt
+Student Test Files(thanks to Andrew Hu): even-more-inputs.txt even-more-outputs.txt
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+Overview:
+In this homework, the code is split up into three different files, nqueens.cpp, nqueens_functions.cpp, and nqueens.h
+
+My approach: Process each line of the given input file and store all inputted values in a vector. Then from the vector, I
+get the inputted size of the chessboard and generate a ChessBoard object containing a 2D vector of the inputted size 
+that represents the object's respective chessboard. Then, I place the inputted queen placements onto the newly created 
+ChessBoard object. From there I would solve the nqueens problem on the newly created ChessBoard, finding the correct queen
+placements or if there is "No solution" and returning that as a string that would be outputted into the given output file.
+
+nqueens.cpp:
+		In nqueens.cpp is where main() is. In main() is where I am reading from the inputted file and writing to the given
+		output file. I first check if the user provides three arguments, the executable, the input file, and the output file,
+		if not I throw an error. For each line of the input file, I am processing it, storing all the given values into a 
+		vector<int> to be used to create the chessboard. From this new vector<int>, I get the desired size of the chessboard by 
+		getting the first element of the vector<int> as from the input line the size of the chessboard was the first given value. 
+		With the inputted size, I construct a new ChessBoard object with the size which creates and initializes a 2D vector<vector<int>> 
+		of dimensions size x size within the object. From there I would loop through the length of the vector<int>, inserting the 
+		queens (row, col value pairs) onto the ChessBoard using insertQueen(). After the inputted queens have been placed, I 
+		would call solve() on the ChessBoard object I created which would return all the remaining queen placements left or 
+		return "No solution". Then I would write the solution or "No solution" to the given output file.
+
+nqueens_functions.cpp:
+		In nqueens_functions.cpp is where I store all the functions dealing with solving nqueens on a given ChessBoard.
+
+		void insertQueen(ChessBoard *currBoard, int row, int col): In this function it takes a given ChessBoard, row, and col and
+		sets the value at ChessBoard's 2D vector<int>[row][col] to 1 signifying a queen placement. It also increments the
+		ChessBoard->numQueens to help count how many queens are on the ChessBoard.
+
+		bool checkValid(ChessBoard *currBoard, int row, int col): In this function it takes a given ChessBoard, row, and col and
+		checks if the position at the given (row, col) in the ChessBoard->board is valid to place a queen at. A space on the board
+		is valid if there is no Queens on its diagonals, rows, and cols. In the code, I check if there is queens at the respective
+		rows, cols, and diagonals of the given (row, col) position on the ChessBoard->board. If there is I return false, if not I 
+		return true.
+
+		string solve(ChessBoard *currBoard): In this function it takes a given ChessBoard and finds the remaining queen placements
+		or if not possible returns "No solution". I first create a stack of ChessBoard objects and push the inputted ChessBoard object
+		onto the stack. Then I while loop while the stack is not empty to emulate recursion. In this while loop, I pop the top of the 
+		stack and store the ChessBoard object in a variable called popped. I first check if the popped ChessBoard object has all the
+		required number of queens placed. If it does, then the ChessBoard is valid and has the correct queen placement and I return all
+		the row and col pairs of the queen placements under one string and return the string. If the first case is not satisfied, then I 
+		move on to emulating recursion. I check for the first row with no queens on the given ChessBoard to begin placing queens at that 
+		given row. Then at that given row, I iterate through each column, checking if the (row, col) is a valid space. If it is valid,
+		then I create a new ChessBoard object that copies the popped ChessBoard object and then I insert a new queen at the respective 
+		(row, col) in the new ChessBoard object. Finally I push the new ChessBoard object onto the stack. The function then loops back
+		and repeats all the processes above. Eventually it will reach a point where the final popped ChessBoard object is either a valid
+		ChessBoard or not. If it's not valid, then the while loop will end and the function will return "No solution".
+
+nqueens.h:
+		This is the header file that contains the implementation of the ChessBoard class. In the ChessBoard class there are three variables,
+		int board_size (stores the size of the chessboard), vector<vector<int>> board (the implementation of the chessboard), and 
+		int numQueens (stores the number of queens on the chessboard). There is also a constructor which takes a given int size and initializes 
+		the vector<vector<int>> board to be of dimensions (size x size) and sets int board_size to the given size.
+
+		In the header file is also the declarations of the functions from nqueens_functions.cpp so I could use it in nqueens.cpp.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Sources I used for my code:
+https://cplusplus.com/doc/tutorial/files/ //Used to understand how to stream for input/output files and read files
+https://www.geeksforgeeks.org/2d-vector-in-cpp-with-user-defined-size/ //Used to understand how to declare and initialize a 2D vector
+https://www.geeksforgeeks.org/stringstream-c-applications/ //Used to understand how to use stringstream library in processing user input
+https://www.techiedelight.com/check-vector-contains-given-element-cpp/ //Used to understand how to check if a vector contains a certain element
+https://www.w3schools.com/cpp/cpp_constructors.asp //Used to understand how to implement constructors in a class
+https://cplusplus.com/reference/vector/vector/ //Used to understand vectors and its respective functions
+https://cplusplus.com/reference/string/stoi/ //Used to understand how to convert a string to an int
+Used similar Makefile from "Hello world, with bells and whistles" codio
